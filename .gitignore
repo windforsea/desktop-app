@@ -27,9 +27,12 @@ ENV/
 .env.*
 !.env.example
 
-# Data files
+# Data & Report files
 *.csv
 data/
+reports/*.txt
+!reports/.gitkeep
+
 
 # OS / Editor
 .DS_Store
