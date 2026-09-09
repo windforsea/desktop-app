@@ -23,6 +23,9 @@ wheels/
 .venv/
 venv/
 ENV/
+.env
+.env.*
+!.env.example
 
 # OS / Editor
 .DS_Store
