@@ -27,6 +27,10 @@ ENV/
 .env.*
 !.env.example
 
+# Data files
+*.csv
+data/
+
 # OS / Editor
 .DS_Store
 Thumbs.db
