@@ -7,7 +7,7 @@ from desktop_app.api import ChatApi
 
 
 def main() -> None:
-    """pywebview 기반 AI 데스크톱 채팅 및 울산 날씨 대시보드 애플리케이션 메인 함수"""
+    """pywebview 기반 기상청 예보 지원 시스템 & AI 메신저 메인 함수"""
     # 프로젝트 루트의 index.html 경로 탐색
     root_dir = Path(__file__).resolve().parent.parent.parent
     index_file = root_dir / "index.html"
@@ -19,14 +19,14 @@ def main() -> None:
     # JavaScript와 통신할 API 인스턴스 생성
     api = ChatApi()
 
-    # 데스크톱 웹뷰 윈도우 생성 (탭 대시보드를 고려하여 폭 520px, 높이 780px로 설정)
+    # 데스크톱 웹뷰 윈도우 생성 (좌측 대시보드 + 우측 예보관 챗봇을 위해 폭 1100px, 높이 820px로 설정)
     window = webview.create_window(
-        title="AI Chat & 울산 날씨 대시보드",
+        title="기상청 스마트 예보 지원 시스템 (울산 기상대 & AI 브리핑)",
         url=str(index_file),
         js_api=api,
-        width=520,
-        height=780,
-        min_size=(440, 560),
+        width=1100,
+        height=820,
+        min_size=(880, 620),
         resizable=True,
     )
 

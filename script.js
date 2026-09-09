@@ -1,33 +1,6 @@
-// DOM 요소 참조 - 메신저
-const chatMessages = document.getElementById('chat-messages');
-const chatForm = document.getElementById('chat-form');
-const messageInput = document.getElementById('message-input');
-const sendBtn = document.getElementById('send-btn');
-const clearBtn = document.getElementById('clear-btn');
-const initialTime = document.getElementById('initial-time');
-
-// DOM 요소 참조 - 탭 & 날씨 대시보드
-const tabButtons = document.querySelectorAll('.tab-btn');
-const tabContents = document.querySelectorAll('.tab-content');
-const weatherTabBtn = document.getElementById('weather-tab-btn');
-const refreshWeatherBtn = document.getElementById('refresh-weather-btn');
-const locName = document.getElementById('loc-name');
-const updateTime = document.getElementById('update-time');
-const currentTemp = document.getElementById('current-temp');
-const currentCondition = document.getElementById('current-condition');
-const weatherIcon = document.getElementById('weather-icon');
-const statPop = document.getElementById('stat-pop');
-const statReh = document.getElementById('stat-reh');
-const statWsd = document.getElementById('stat-wsd');
-const statPty = document.getElementById('stat-pty');
-const hourlyList = document.getElementById('hourly-list');
-const csvTbody = document.getElementById('csv-tbody');
-const csvBadge = document.getElementById('csv-badge');
-
-let isPywebviewReady = false;
-let isWeatherLoaded = false;
-
-// 현재 시간 포맷팅 함수 (오전/오후 HH:MM)
+// ==========================================================================
+// 공통 시간 포맷팅 헬퍼
+// ==========================================================================
 function getCurrentTime() {
   const now = new Date();
   let hours = now.getHours();
@@ -38,17 +11,12 @@ function getCurrentTime() {
   return `${ampm} ${hours}:${minutes}`;
 }
 
-if (initialTime) {
-  initialTime.textContent = getCurrentTime();
-}
-
-function scrollToBottom() {
-  chatMessages.scrollTop = chatMessages.scrollHeight;
-}
-
 // ==========================================================================
-// 탭 전환 처리
+// [탭 전환]
 // ==========================================================================
+const tabButtons = document.querySelectorAll('.tab-btn');
+const tabContents = document.querySelectorAll('.tab-content');
+
 tabButtons.forEach((btn) => {
   btn.addEventListener('click', () => {
     const targetId = btn.getAttribute('data-tab');
@@ -62,7 +30,6 @@ tabButtons.forEach((btn) => {
       targetContent.classList.add('active');
     }
 
-    // 날씨 탭 첫 진입 시 데이터 자동 로드
     if (targetId === 'weather-view' && !isWeatherLoaded) {
       loadWeatherData(false);
     }
@@ -70,8 +37,26 @@ tabButtons.forEach((btn) => {
 });
 
 // ==========================================================================
-// 울산 날씨 대시보드 데이터 로드 및 렌더링
+// [울산 날씨 대시보드] 데이터 로드 및 렌더링
 // ==========================================================================
+const refreshWeatherBtn = document.getElementById('refresh-weather-btn');
+const generateReportBtn = document.getElementById('generate-report-btn');
+const openReportsBtn = document.getElementById('open-reports-btn');
+const locName = document.getElementById('loc-name');
+const updateTime = document.getElementById('update-time');
+const currentTemp = document.getElementById('current-temp');
+const currentCondition = document.getElementById('current-condition');
+const weatherIcon = document.getElementById('weather-icon');
+const statPop = document.getElementById('stat-pop');
+const statReh = document.getElementById('stat-reh');
+const statWsd = document.getElementById('stat-wsd');
+const statPty = document.getElementById('stat-pty');
+const hourlyList = document.getElementById('hourly-list');
+const csvTbody = document.getElementById('csv-tbody');
+const csvBadge = document.getElementById('csv-badge');
+
+let isWeatherLoaded = false;
+
 async function loadWeatherData(forceRefresh = false) {
   if (refreshWeatherBtn) {
     refreshWeatherBtn.disabled = true;
@@ -89,8 +74,7 @@ async function loadWeatherData(forceRefresh = false) {
         alert(res.error || '날씨 데이터를 불러오지 못했습니다.');
       }
     } else {
-      console.warn('pywebview API가 아직 준비되지 않았습니다.');
-      csvTbody.innerHTML = '<tr><td colspan="6" class="loading-cell">pywebview API 연결 대기 중...</td></tr>';
+      console.warn('pywebview API 대기 중...');
     }
   } catch (err) {
     console.error('날씨 로드 오류:', err);
@@ -106,16 +90,13 @@ async function loadWeatherData(forceRefresh = false) {
 function renderWeatherDashboard(data) {
   const sum = data.summary;
 
-  // 1. 헤더 요약 정보
   locName.textContent = sum.location || '울산광역시 중구 반구1동';
   const baseH = sum.base_time ? `${sum.base_time.slice(0, 2)}:00` : '';
   updateTime.textContent = `기상청 ${sum.base_date} ${baseH} 발표 (갱신: ${data.updated_at})`;
 
-  // 2. 메인 날씨 카드
   currentTemp.textContent = sum.temperature;
   currentCondition.textContent = sum.condition;
 
-  // 날씨 이모지 결정
   if (sum.condition.includes('비')) {
     weatherIcon.textContent = '🌧️';
   } else if (sum.condition.includes('눈')) {
@@ -133,7 +114,7 @@ function renderWeatherDashboard(data) {
   statWsd.textContent = sum.wind_speed;
   statPty.textContent = sum.pty_desc;
 
-  // 3. 시간대별 단기예보 리스트
+  // 시간별 예보
   hourlyList.innerHTML = '';
   if (data.hourly && data.hourly.length > 0) {
     data.hourly.forEach((h) => {
@@ -149,7 +130,7 @@ function renderWeatherDashboard(data) {
     });
   }
 
-  // 4. 원본 CSV 데이터 테이블 렌더링
+  // CSV 테이블
   if (data.csv_path) {
     csvBadge.textContent = 'data/ulsan_weather.csv';
   }
@@ -177,111 +158,214 @@ function renderWeatherDashboard(data) {
 }
 
 if (refreshWeatherBtn) {
-  refreshWeatherBtn.addEventListener('click', () => {
-    loadWeatherData(true);
-  });
+  refreshWeatherBtn.addEventListener('click', () => loadWeatherData(true));
 }
 
 // ==========================================================================
-// [탭 1] AI 메신저 로직
+// [우측 사이드바: 기상청 직원 전용 예보 지원 AI 챗봇]
 // ==========================================================================
-function addMessage(text, type = 'outgoing', isError = false) {
-  const messageElement = document.createElement('div');
-  messageElement.classList.add('message', type);
-  if (isError) messageElement.classList.add('error');
+const weatherChatMessages = document.getElementById('weather-chat-messages');
+const weatherChatForm = document.getElementById('weather-chat-form');
+const weatherChatInput = document.getElementById('weather-chat-input');
+const weatherSendBtn = document.getElementById('weather-send-btn');
+const clearWeatherChatBtn = document.getElementById('clear-weather-chat-btn');
+const wInitialTime = document.getElementById('w-initial-time');
 
-  const timeString = getCurrentTime();
+if (wInitialTime) {
+  wInitialTime.textContent = getCurrentTime();
+}
 
-  if (type === 'incoming') {
-    messageElement.innerHTML = `
-      <div class="avatar-small">✨</div>
-      <div class="message-content">
-        <div class="bubble"></div>
-        <span class="timestamp">${timeString}</span>
-      </div>
-    `;
-    messageElement.querySelector('.bubble').textContent = text;
-  } else {
-    messageElement.innerHTML = `
-      <div class="message-content">
-        <div class="bubble"></div>
-        <span class="timestamp">${timeString}</span>
-      </div>
-    `;
-    messageElement.querySelector('.bubble').textContent = text;
+function addWeatherChatMessage(text, type = 'outgoing', isError = false) {
+  const msgEl = document.createElement('div');
+  msgEl.className = `w-msg ${type} ${isError ? 'error' : ''}`;
+  msgEl.innerHTML = `
+    <div class="w-bubble"></div>
+    <span class="w-time">${getCurrentTime()}</span>
+  `;
+  msgEl.querySelector('.w-bubble').textContent = text;
+  weatherChatMessages.appendChild(msgEl);
+  weatherChatMessages.scrollTop = weatherChatMessages.scrollHeight;
+  return msgEl;
+}
+
+weatherChatForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const text = weatherChatInput.value.trim();
+  if (!text) return;
+
+  addWeatherChatMessage(text, 'outgoing');
+  weatherChatInput.value = '';
+  weatherChatInput.disabled = true;
+  weatherSendBtn.disabled = true;
+
+  // 로딩 표시
+  const loadingEl = document.createElement('div');
+  loadingEl.className = 'w-msg incoming';
+  loadingEl.id = 'w-typing';
+  loadingEl.innerHTML = `
+    <div class="w-bubble" style="color: #64748b;">✍️ 예보 특이사항 분석 및 반영 중...</div>
+    <span class="w-time">${getCurrentTime()}</span>
+  `;
+  weatherChatMessages.appendChild(loadingEl);
+  weatherChatMessages.scrollTop = weatherChatMessages.scrollHeight;
+
+  try {
+    if (window.pywebview && window.pywebview.api && window.pywebview.api.send_weather_chat) {
+      const res = await window.pywebview.api.send_weather_chat(text);
+      const curLoading = document.getElementById('w-typing');
+      if (curLoading) curLoading.remove();
+
+      if (res.success) {
+        addWeatherChatMessage(res.reply, 'incoming');
+      } else {
+        addWeatherChatMessage(res.error || '답변 실패', 'incoming', true);
+      }
+    }
+  } catch (err) {
+    const curLoading = document.getElementById('w-typing');
+    if (curLoading) curLoading.remove();
+    addWeatherChatMessage(`오류: ${err.message}`, 'incoming', true);
+  } finally {
+    weatherChatInput.disabled = false;
+    weatherSendBtn.disabled = false;
+    weatherChatInput.focus();
   }
+});
 
-  chatMessages.appendChild(messageElement);
-  scrollToBottom();
-  return messageElement;
-}
-
-function showTypingIndicator() {
-  const loadingElement = document.createElement('div');
-  loadingElement.classList.add('message', 'incoming');
-  loadingElement.id = 'typing-indicator';
-  loadingElement.innerHTML = `
-    <div class="avatar-small">✨</div>
-    <div class="message-content">
-      <div class="bubble">
-        <div class="typing-dots">
-          <span></span><span></span><span></span>
-        </div>
+clearWeatherChatBtn.addEventListener('click', async () => {
+  if (confirm('예보관 챗봇 대화 기록을 초기화하시겠습니까?')) {
+    if (window.pywebview && window.pywebview.api && window.pywebview.api.clear_weather_chat) {
+      await window.pywebview.api.clear_weather_chat();
+    }
+    weatherChatMessages.innerHTML = `
+      <div class="w-msg incoming">
+        <div class="w-bubble">대화 기록이 초기화되었습니다. 새로운 특이사항이나 전달사항을 입력해주세요. ✨</div>
+        <span class="w-time">${getCurrentTime()}</span>
       </div>
+    `;
+  }
+});
+
+// ==========================================================================
+// [보고서 생성 및 모달 팝업]
+// ==========================================================================
+const reportModal = document.getElementById('report-modal');
+const modalCloseBtn = document.getElementById('modal-close-btn');
+const modalOkBtn = document.getElementById('modal-ok-btn');
+const modalCopyBtn = document.getElementById('modal-copy-btn');
+const modalOpenFolderBtn = document.getElementById('modal-open-folder-btn');
+const modalFileBadge = document.getElementById('modal-file-badge');
+const reportContentPre = document.getElementById('report-content-pre');
+
+let currentReportText = '';
+
+generateReportBtn.addEventListener('click', async () => {
+  generateReportBtn.disabled = true;
+  generateReportBtn.textContent = '⏳ AI 기상 보고서 작성 중...';
+
+  try {
+    if (window.pywebview && window.pywebview.api && window.pywebview.api.generate_report) {
+      const res = await window.pywebview.api.generate_report();
+
+      if (res.success) {
+        currentReportText = res.report_text;
+        reportContentPre.textContent = res.report_text;
+        modalFileBadge.textContent = `reports/${res.filename} (저장 완료)`;
+        reportModal.classList.add('active');
+      } else {
+        alert(res.error || '보고서 생성에 실패했습니다.');
+      }
+    }
+  } catch (err) {
+    alert(`보고서 생성 오류: ${err.message}`);
+  } finally {
+    generateReportBtn.disabled = false;
+    generateReportBtn.textContent = '📋 기상 보고서 생성 (.txt)';
+  }
+});
+
+// 폴더 열기
+openReportsBtn.addEventListener('click', async () => {
+  if (window.pywebview && window.pywebview.api && window.pywebview.api.open_reports_folder) {
+    await window.pywebview.api.open_reports_folder();
+  }
+});
+
+modalOpenFolderBtn.addEventListener('click', async () => {
+  if (window.pywebview && window.pywebview.api && window.pywebview.api.open_reports_folder) {
+    await window.pywebview.api.open_reports_folder();
+  }
+});
+
+// 클립보드 복사
+modalCopyBtn.addEventListener('click', async () => {
+  if (!currentReportText) return;
+  try {
+    await navigator.clipboard.writeText(currentReportText);
+    alert('📋 보고서 전문이 클립보드에 복사되었습니다.');
+  } catch (err) {
+    // 대체 복사
+    const textArea = document.createElement('textarea');
+    textArea.value = currentReportText;
+    document.body.appendChild(textArea);
+    textArea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textArea);
+    alert('📋 보고서 전문이 복사되었습니다.');
+  }
+});
+
+// 모달 닫기
+modalCloseBtn.addEventListener('click', () => reportModal.classList.remove('active'));
+modalOkBtn.addEventListener('click', () => reportModal.classList.remove('active'));
+
+// ==========================================================================
+// [일반 AI 메신저 로직]
+// ==========================================================================
+const chatMessages = document.getElementById('chat-messages');
+const chatForm = document.getElementById('chat-form');
+const messageInput = document.getElementById('message-input');
+const sendBtn = document.getElementById('send-btn');
+const clearBtn = document.getElementById('clear-btn');
+const initialTime = document.getElementById('initial-time');
+
+if (initialTime) initialTime.textContent = getCurrentTime();
+
+function addMessage(text, type = 'outgoing', isError = false) {
+  const el = document.createElement('div');
+  el.className = `message ${type} ${isError ? 'error' : ''}`;
+  el.innerHTML = `
+    <div class="message-content">
+      <div class="bubble"></div>
+      <span class="timestamp">${getCurrentTime()}</span>
     </div>
   `;
-  chatMessages.appendChild(loadingElement);
-  scrollToBottom();
-  return loadingElement;
+  el.querySelector('.bubble').textContent = text;
+  chatMessages.appendChild(el);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
 }
-
-function removeTypingIndicator() {
-  const indicator = document.getElementById('typing-indicator');
-  if (indicator) {
-    indicator.remove();
-  }
-}
-
-window.addEventListener('pywebviewready', () => {
-  isPywebviewReady = true;
-  console.log('pywebview 연결 완료');
-});
 
 chatForm.addEventListener('submit', async (e) => {
   e.preventDefault();
-
   const text = messageInput.value.trim();
   if (!text) return;
 
   addMessage(text, 'outgoing');
-
   messageInput.value = '';
   messageInput.disabled = true;
   sendBtn.disabled = true;
 
-  showTypingIndicator();
-
   try {
     if (window.pywebview && window.pywebview.api && window.pywebview.api.send_message) {
-      const result = await window.pywebview.api.send_message(text);
-      removeTypingIndicator();
-
-      if (result.success) {
-        addMessage(result.reply, 'incoming');
+      const res = await window.pywebview.api.send_message(text);
+      if (res.success) {
+        addMessage(res.reply, 'incoming');
       } else {
-        addMessage(result.error || '답변을 불러오지 못했습니다.', 'incoming', true);
+        addMessage(res.error || '오류 발생', 'incoming', true);
       }
-    } else {
-      removeTypingIndicator();
-      addMessage(
-        '데스크톱 앱(pywebview) 환경에서 실행해주세요. (명령어: uv run desktop-app)',
-        'incoming',
-        true
-      );
     }
-  } catch (error) {
-    removeTypingIndicator();
-    addMessage(`통신 오류가 발생했습니다: ${error.message}`, 'incoming', true);
+  } catch (err) {
+    addMessage(`통신 오류: ${err.message}`, 'incoming', true);
   } finally {
     messageInput.disabled = false;
     sendBtn.disabled = false;
@@ -290,24 +374,26 @@ chatForm.addEventListener('submit', async (e) => {
 });
 
 clearBtn.addEventListener('click', async () => {
-  if (confirm('모든 대화 기록을 초기화하시겠습니까?')) {
+  if (confirm('일반 메신저 대화 기록을 초기화하시겠습니까?')) {
     if (window.pywebview && window.pywebview.api && window.pywebview.api.clear_history) {
-      try {
-        await window.pywebview.api.clear_history();
-      } catch (err) {
-        console.error('대화 초기화 실패:', err);
-      }
+      await window.pywebview.api.clear_history();
     }
-
     chatMessages.innerHTML = `
       <div class="date-divider">오늘</div>
       <div class="message incoming">
-        <div class="avatar-small">✨</div>
         <div class="message-content">
-          <div class="bubble">대화가 초기화되었습니다. 새로운 질문을 남겨보세요! ✨</div>
+          <div class="bubble">대화가 초기화되었습니다.</div>
           <span class="timestamp">${getCurrentTime()}</span>
         </div>
       </div>
     `;
   }
+});
+
+// ==========================================================================
+// 앱 초기화 및 자동 날씨 로드
+// ==========================================================================
+window.addEventListener('pywebviewready', () => {
+  console.log('pywebview 연결 완료');
+  loadWeatherData(false);
 });

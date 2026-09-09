@@ -7,7 +7,7 @@
   user-select: none;
 }
 
-input, textarea, .bubble, .weather-table {
+input, textarea, .bubble, .w-bubble, .weather-table, .report-content-pre {
   -webkit-user-select: text;
   user-select: text;
 }
@@ -17,8 +17,8 @@ html, body {
   width: 100%;
   overflow: hidden;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  background-color: #f8fafc;
-  color: #1e293b;
+  background-color: #f1f5f9;
+  color: #0f172a;
 }
 
 .app-container {
@@ -30,55 +30,78 @@ html, body {
 }
 
 /* ==========================================================================
-   상단 메인 탭 네비게이션
+   상단 메인 탭 & 브랜드 헤더
    ========================================================================== */
 .app-tabs {
   display: flex;
-  background-color: #f1f5f9;
-  padding: 6px 12px;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #0f172a;
+  padding: 8px 16px;
+  border-bottom: 1px solid #1e293b;
+  z-index: 30;
+  color: #ffffff;
+}
+
+.brand-title {
+  display: flex;
+  align-items: center;
   gap: 8px;
-  border-bottom: 1px solid #e2e8f0;
-  z-index: 20;
+}
+
+.brand-badge {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.5px;
+}
+
+.brand-text {
+  font-size: 14px;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+.tab-btn-group {
+  display: flex;
+  gap: 6px;
 }
 
 .tab-btn {
-  flex: 1;
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: 6px;
-  padding: 8px 14px;
-  border-radius: 10px;
-  border: none;
-  background: transparent;
-  font-size: 13px;
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 12.5px;
   font-weight: 600;
-  color: #64748b;
+  color: #cbd5e1;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.2s;
 }
 
 .tab-btn:hover {
-  background-color: #e2e8f0;
-  color: #0f172a;
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
 }
 
 .tab-btn.active {
-  background-color: #ffffff;
-  color: #2563eb;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  background-color: #2563eb;
+  color: #ffffff;
+  border-color: #3b82f6;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
 }
 
-.tab-btn .tab-icon {
-  font-size: 15px;
-}
-
-/* 탭 컨텐츠 전환 */
 .tab-content {
   flex: 1;
   display: none;
   flex-direction: column;
-  height: calc(100vh - 49px);
+  height: calc(100vh - 47px);
   overflow: hidden;
 }
 
@@ -87,287 +110,47 @@ html, body {
 }
 
 /* ==========================================================================
-   [탭 1] AI 메신저 스타일
-   ========================================================================== */
-.chat-header {
-  padding: 12px 18px;
-  background-color: #ffffff;
-  border-bottom: 1px solid #e2e8f0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  z-index: 10;
-}
-
-.user-info {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.avatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  color: #fff;
-}
-
-.details .name {
-  font-size: 14px;
-  font-weight: 700;
-  color: #0f172a;
-}
-
-.details .status {
-  font-size: 11px;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  color: #64748b;
-}
-
-.details .status.online::before {
-  content: "";
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background-color: #10b981;
-}
-
-.header-actions button {
-  background: none;
-  border: none;
-  font-size: 16px;
-  cursor: pointer;
-  padding: 6px;
-  border-radius: 8px;
-  transition: background-color 0.15s;
-}
-
-.header-actions button:hover {
-  background-color: #f1f5f9;
-}
-
-.chat-messages {
-  flex: 1;
-  padding: 16px;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  background-color: #f8fafc;
-  scroll-behavior: smooth;
-}
-
-.date-divider {
-  align-self: center;
-  font-size: 11px;
-  background-color: #e2e8f0;
-  color: #64748b;
-  padding: 3px 10px;
-  border-radius: 10px;
-  font-weight: 600;
-}
-
-.message {
-  display: flex;
-  gap: 8px;
-  max-width: 85%;
-  animation: fadeIn 0.2s ease-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.avatar-small {
-  width: 30px;
-  height: 30px;
-  border-radius: 8px;
-  background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 15px;
-  flex-shrink: 0;
-}
-
-.message-content {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.bubble {
-  padding: 9px 13px;
-  border-radius: 14px;
-  font-size: 13.5px;
-  line-height: 1.5;
-  word-break: break-word;
-  white-space: pre-wrap;
-}
-
-.timestamp {
-  font-size: 10px;
-  color: #94a3b8;
-}
-
-.message.incoming {
-  align-self: flex-start;
-}
-
-.message.incoming .bubble {
-  background-color: #ffffff;
-  color: #1e293b;
-  border-bottom-left-radius: 3px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  border: 1px solid #f1f5f9;
-}
-
-.message.incoming.error .bubble {
-  background-color: #fef2f2;
-  color: #dc2626;
-  border-color: #fecaca;
-}
-
-.message.outgoing {
-  align-self: flex-end;
-  flex-direction: row-reverse;
-}
-
-.message.outgoing .bubble {
-  background-color: #2563eb;
-  color: #ffffff;
-  border-bottom-right-radius: 3px;
-  box-shadow: 0 2px 5px rgba(37, 99, 235, 0.2);
-}
-
-.message.outgoing .timestamp {
-  text-align: right;
-}
-
-.typing-dots {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px 2px;
-}
-
-.typing-dots span {
-  width: 6px;
-  height: 6px;
-  background-color: #94a3b8;
-  border-radius: 50%;
-  animation: bounce 1.4s infinite ease-in-out both;
-}
-
-.typing-dots span:nth-child(1) { animation-delay: -0.32s; }
-.typing-dots span:nth-child(2) { animation-delay: -0.16s; }
-
-@keyframes bounce {
-  0%, 80%, 100% { transform: scale(0.3); opacity: 0.5; }
-  40% { transform: scale(1); opacity: 1; }
-}
-
-.chat-input-area {
-  padding: 10px 14px;
-  background-color: #ffffff;
-  border-top: 1px solid #e2e8f0;
-}
-
-#chat-form {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background-color: #f1f5f9;
-  border-radius: 20px;
-  padding: 5px 6px 5px 14px;
-  border: 1px solid transparent;
-  transition: all 0.2s ease;
-}
-
-#chat-form:focus-within {
-  background-color: #ffffff;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
-}
-
-#message-input {
-  flex: 1;
-  border: none;
-  background: transparent;
-  font-size: 13.5px;
-  outline: none;
-  color: #0f172a;
-}
-
-#message-input::placeholder {
-  color: #94a3b8;
-}
-
-#send-btn {
-  background-color: #2563eb;
-  color: #ffffff;
-  border: none;
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  flex-shrink: 0;
-}
-
-#send-btn:hover:not(:disabled) {
-  background-color: #1d4ed8;
-}
-
-#send-btn:disabled {
-  background-color: #cbd5e1;
-  cursor: not-allowed;
-}
-
-/* ==========================================================================
-   [탭 2] 울산 날씨 대시보드 스타일
+   [탭 1] 기상 대시보드 탑 바
    ========================================================================== */
 .weather-header {
-  padding: 14px 18px;
+  padding: 10px 18px;
   background-color: #ffffff;
   border-bottom: 1px solid #e2e8f0;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  z-index: 10;
 }
 
 .weather-loc-box {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 2px;
+}
+
+.loc-tags {
+  display: flex;
+  gap: 5px;
 }
 
 .loc-badge {
-  align-self: flex-start;
-  font-size: 10px;
+  font-size: 10.5px;
   font-weight: 700;
-  color: #2563eb;
-  background-color: #eff6ff;
-  padding: 2px 7px;
-  border-radius: 6px;
+  color: #0369a1;
+  background-color: #e0f2fe;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.loc-badge.secondary {
+  color: #475569;
+  background-color: #f1f5f9;
 }
 
 .loc-name {
-  font-size: 15px;
-  font-weight: 700;
+  font-size: 16px;
+  font-weight: 800;
   color: #0f172a;
 }
 
@@ -376,48 +159,276 @@ html, body {
   color: #64748b;
 }
 
-.refresh-btn {
-  background-color: #f1f5f9;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  padding: 7px 12px;
-  font-size: 12px;
-  font-weight: 600;
-  color: #334155;
-  cursor: pointer;
-  transition: all 0.2s;
+.header-action-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.refresh-btn:hover {
-  background-color: #e2e8f0;
+.action-btn {
+  padding: 7px 13px;
+  border-radius: 8px;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.action-btn.secondary {
+  background-color: #f8fafc;
+  border: 1px solid #cbd5e1;
+  color: #334155;
+}
+
+.action-btn.secondary:hover {
+  background-color: #f1f5f9;
+  border-color: #94a3b8;
   color: #0f172a;
 }
 
-.refresh-btn:active {
-  transform: scale(0.96);
+.action-btn.primary {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  border: 1px solid #0284c7;
+  color: #ffffff;
+  box-shadow: 0 2px 5px rgba(2, 132, 199, 0.25);
 }
 
-/* 날씨 스크롤 바디 */
-.weather-scroll-body {
+.action-btn.primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #0369a1 0%, #075985 100%);
+}
+
+.action-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ==========================================================================
+   2열 워크스페이스 (좌: 대시보드 / 우: 예보관 챗봇)
+   ========================================================================== */
+.weather-workspace {
   flex: 1;
+  display: flex;
+  height: calc(100% - 65px);
+  overflow: hidden;
+  background-color: #f8fafc;
+}
+
+/* 좌측 메인 패널 */
+.weather-main-panel {
+  flex: 1;
+  min-width: 0;
   padding: 16px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  background-color: #f8fafc;
+  gap: 14px;
+  border-right: 1px solid #e2e8f0;
 }
 
-/* 메인 날씨 카드 */
-.weather-main-card {
-  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-  border-radius: 18px;
-  padding: 20px;
-  color: #ffffff;
-  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.22);
+/* 우측 사이드바 챗봇 */
+.weather-chat-sidebar {
+  width: 360px;
+  flex-shrink: 0;
+  background-color: #ffffff;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  height: 100%;
+  border-left: 1px solid #e2e8f0;
+  box-shadow: -2px 0 6px rgba(0, 0, 0, 0.02);
+}
+
+.sidebar-header {
+  padding: 12px 14px;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ffffff;
+}
+
+.sidebar-title-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sidebar-icon {
+  font-size: 22px;
+}
+
+.sidebar-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.sidebar-subtitle {
+  font-size: 10.5px;
+  color: #0284c7;
+  font-weight: 600;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  font-size: 15px;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 6px;
+  color: #64748b;
+  transition: background-color 0.15s;
+}
+
+.icon-btn:hover {
+  background-color: #f1f5f9;
+  color: #0f172a;
+}
+
+.sidebar-banner {
+  background-color: #f0fdf4;
+  border-bottom: 1px solid #dcfce7;
+  color: #166534;
+  padding: 8px 12px;
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.weather-chat-messages {
+  flex: 1;
+  padding: 12px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: #f8fafc;
+  scroll-behavior: smooth;
+}
+
+.w-msg {
+  display: flex;
+  flex-direction: column;
+  max-width: 90%;
+  gap: 3px;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.w-msg.incoming {
+  align-self: flex-start;
+}
+
+.w-msg.incoming .w-bubble {
+  background-color: #ffffff;
+  color: #1e293b;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  border-bottom-left-radius: 3px;
+  padding: 8px 12px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.w-msg.incoming.error .w-bubble {
+  background-color: #fef2f2;
+  color: #dc2626;
+  border-color: #fecaca;
+}
+
+.w-msg.outgoing {
+  align-self: flex-end;
+}
+
+.w-msg.outgoing .w-bubble {
+  background-color: #0284c7;
+  color: #ffffff;
+  border-radius: 12px;
+  border-bottom-right-radius: 3px;
+  padding: 8px 12px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  box-shadow: 0 2px 4px rgba(2, 132, 199, 0.25);
+}
+
+.w-time {
+  font-size: 9.5px;
+  color: #94a3b8;
+}
+
+.w-msg.outgoing .w-time {
+  text-align: right;
+}
+
+.weather-chat-input-area {
+  padding: 10px 12px;
+  background-color: #ffffff;
+  border-top: 1px solid #e2e8f0;
+}
+
+#weather-chat-form {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #f1f5f9;
+  border-radius: 20px;
+  padding: 4px 6px 4px 12px;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+}
+
+#weather-chat-form:focus-within {
+  background-color: #ffffff;
+  border-color: #0284c7;
+  box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15);
+}
+
+#weather-chat-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 12.5px;
+  outline: none;
+  color: #0f172a;
+}
+
+#weather-send-btn {
+  background-color: #0284c7;
+  color: #ffffff;
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.15s;
+  flex-shrink: 0;
+}
+
+#weather-send-btn:hover:not(:disabled) {
+  background-color: #0369a1;
+}
+
+#weather-send-btn:disabled {
+  background-color: #cbd5e1;
+  cursor: not-allowed;
+}
+
+/* ==========================================================================
+   날씨 대시보드 카드 및 컴포넌트
+   ========================================================================== */
+.weather-main-card {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  border-radius: 14px;
+  padding: 16px 20px;
+  color: #ffffff;
+  box-shadow: 0 6px 16px rgba(2, 132, 199, 0.22);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .weather-main-top {
@@ -426,36 +437,31 @@ html, body {
   align-items: center;
 }
 
-.temp-wrap {
-  display: flex;
-  flex-direction: column;
-}
-
 .current-temp {
-  font-size: 38px;
+  font-size: 34px;
   font-weight: 800;
   line-height: 1.1;
   letter-spacing: -1px;
 }
 
 .current-condition {
-  font-size: 15px;
-  font-weight: 500;
+  font-size: 14px;
+  font-weight: 600;
   opacity: 0.95;
-  margin-top: 4px;
+  margin-top: 2px;
 }
 
 .weather-big-icon {
-  font-size: 48px;
+  font-size: 42px;
 }
 
 .weather-stats-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 8px;
-  background-color: rgba(255, 255, 255, 0.15);
-  border-radius: 12px;
-  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+  padding: 8px 12px;
   backdrop-filter: blur(4px);
 }
 
@@ -463,87 +469,88 @@ html, body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3px;
+  gap: 2px;
   text-align: center;
 }
 
 .stat-label {
-  font-size: 10.5px;
+  font-size: 10px;
   opacity: 0.85;
 }
 
 .stat-val {
-  font-size: 12.5px;
+  font-size: 12px;
   font-weight: 700;
 }
 
-/* 섹션 블록 */
 .section-block {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
+}
+
+.flex-grow-section {
+  flex: 1;
+  min-height: 200px;
 }
 
 .section-title {
-  font-size: 13.5px;
+  font-size: 13px;
   font-weight: 700;
   color: #0f172a;
 }
 
 .section-subtext {
-  font-size: 11.5px;
+  font-size: 11px;
   color: #64748b;
-  margin-top: -4px;
+  margin-top: -3px;
 }
 
-/* 시간대별 단기예보 가로 스크롤 카드 */
 .hourly-forecast-list {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   overflow-x: auto;
-  padding-bottom: 6px;
-  scrollbar-width: thin;
+  padding-bottom: 4px;
 }
 
 .hourly-card {
-  flex: 0 0 76px;
+  flex: 0 0 72px;
   background-color: #ffffff;
   border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 10px 8px;
+  border-radius: 10px;
+  padding: 8px 6px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
   text-align: center;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
 }
 
 .hourly-time {
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 600;
   color: #64748b;
 }
 
 .hourly-cond {
-  font-size: 11px;
+  font-size: 10.5px;
   color: #334155;
   white-space: nowrap;
 }
 
 .hourly-temp {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
   color: #0f172a;
 }
 
 .hourly-pop {
-  font-size: 10.5px;
-  color: #2563eb;
+  font-size: 10px;
+  color: #0284c7;
   font-weight: 600;
 }
 
-/* CSV 테이블 섹션 */
 .table-section-header {
   display: flex;
   justify-content: space-between;
@@ -551,28 +558,28 @@ html, body {
 }
 
 .csv-path-badge {
-  font-size: 10.5px;
+  font-size: 10px;
   font-family: monospace;
   background-color: #f1f5f9;
   color: #475569;
-  padding: 3px 8px;
-  border-radius: 6px;
+  padding: 2px 7px;
+  border-radius: 4px;
   border: 1px solid #e2e8f0;
 }
 
 .table-container {
-  max-height: 250px;
+  max-height: 230px;
   overflow: auto;
   background-color: #ffffff;
   border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  border-radius: 10px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
 }
 
 .weather-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 11.5px;
+  font-size: 11px;
   text-align: left;
 }
 
@@ -580,7 +587,7 @@ html, body {
   background-color: #f8fafc;
   color: #475569;
   font-weight: 700;
-  padding: 8px 10px;
+  padding: 6px 8px;
   border-bottom: 1px solid #e2e8f0;
   position: sticky;
   top: 0;
@@ -589,7 +596,7 @@ html, body {
 }
 
 .weather-table td {
-  padding: 8px 10px;
+  padding: 6px 8px;
   border-bottom: 1px solid #f1f5f9;
   color: #1e293b;
   white-space: nowrap;
@@ -601,6 +608,289 @@ html, body {
 
 .loading-cell {
   text-align: center;
-  padding: 24px;
+  padding: 20px;
   color: #64748b;
+}
+
+/* ==========================================================================
+   보고서 결과 모달 팝업
+   ========================================================================== */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background-color: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+.modal-container {
+  background-color: #ffffff;
+  width: 100%;
+  max-width: 780px;
+  max-height: 85vh;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  border: 1px solid #cbd5e1;
+  overflow: hidden;
+}
+
+.modal-header {
+  padding: 14px 18px;
+  background-color: #0f172a;
+  color: #ffffff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-title-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.modal-icon {
+  font-size: 22px;
+}
+
+.modal-title {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.modal-file-badge {
+  font-size: 10.5px;
+  font-family: monospace;
+  background: rgba(255, 255, 255, 0.15);
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: #93c5fd;
+}
+
+.modal-close-btn {
+  background: none;
+  border: none;
+  color: #cbd5e1;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: all 0.15s;
+}
+
+.modal-close-btn:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+}
+
+.modal-body {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  background-color: #f8fafc;
+}
+
+.report-content-pre {
+  font-family: "Consolas", "Courier New", monospace;
+  font-size: 12.5px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 16px;
+  color: #1e293b;
+}
+
+.modal-footer {
+  padding: 12px 18px;
+  background-color: #ffffff;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-tip {
+  font-size: 11px;
+  color: #64748b;
+}
+
+.modal-btn-group {
+  display: flex;
+  gap: 8px;
+}
+
+/* ==========================================================================
+   일반 AI 메신저 (탭 2)
+   ========================================================================== */
+.chat-header {
+  padding: 10px 16px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: #fff;
+}
+
+.details .name {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.details .status {
+  font-size: 10.5px;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.details .status.online::before {
+  content: "";
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: #10b981;
+}
+
+.chat-messages {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: #f8fafc;
+}
+
+.date-divider {
+  align-self: center;
+  font-size: 10.5px;
+  background-color: #e2e8f0;
+  color: #64748b;
+  padding: 2px 8px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.message {
+  display: flex;
+  gap: 6px;
+  max-width: 80%;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.message.incoming { align-self: flex-start; }
+.message.outgoing { align-self: flex-end; flex-direction: row-reverse; }
+
+.avatar-small {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.message-content {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.bubble {
+  padding: 8px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.5;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+
+.message.incoming .bubble {
+  background-color: #ffffff;
+  color: #1e293b;
+  border: 1px solid #e2e8f0;
+  border-bottom-left-radius: 2px;
+}
+
+.message.outgoing .bubble {
+  background-color: #2563eb;
+  color: #ffffff;
+  border-bottom-right-radius: 2px;
+}
+
+.timestamp { font-size: 9.5px; color: #94a3b8; }
+.message.outgoing .timestamp { text-align: right; }
+
+.chat-input-area {
+  padding: 10px 16px;
+  background-color: #ffffff;
+  border-top: 1px solid #e2e8f0;
+}
+
+#chat-form {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #f1f5f9;
+  border-radius: 20px;
+  padding: 4px 6px 4px 12px;
+}
+
+#message-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 13px;
+  outline: none;
+}
+
+#send-btn {
+  background-color: #2563eb;
+  color: #ffffff;
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 }
