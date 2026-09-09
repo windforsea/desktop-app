@@ -1,18 +1,29 @@
-# Simple Chat UI
+# Desktop AI Chat App
 
-순수 HTML, CSS, JavaScript만을 사용하여 제작한 가볍고 반응형을 지원하는 심플 채팅 UI입니다.
+`pywebview`와 OpenAI의 최신 `Responses API` (`gpt-5.6-luna`)를 기반으로 제작된 경량 데스크톱 AI 메신저 프로그램입니다.
 
 ## 📱 주요 기능
-- **직관적인 메시징 UI**: 수신 메시지(왼쪽)와 발신 메시지(오른쪽) 구분 및 실시간 타임스탬프 표시
-- **반응형 디자인**: 모바일 및 데스크톱 환경 모두에 최적화된 레이아웃
-- **대화 시뮬레이션**: 메시지 전송 시 자동 스크롤 하단 이동 및 봇 자동 응답 시뮬레이션
-- **대화 내용 초기화**: 상단 휴지통 아이콘을 통한 간편한 대화 비우기
+- **데스크톱 네이티브 창 실행**: 브라우저 없이 독립된 윈도우 애플리케이션으로 실행
+- **실제 AI 통신**: OpenAI Responses API(`gpt-5.6-luna`) 기반 대화 생성
+- **멀티턴 대화 유지**: 이전 질문과 답변 맥락을 기억하며 자연스러운 연속 대화 가능
+- **실시간 로딩 인디케이터**: AI가 답변을 작성하는 동안 점 바운스 애니메이션 노출
+- **대화 초기화 기능**: 상단 휴지통 아이콘 클릭 시 백엔드 대화 컨텍스트 및 화면 메시지 초기화
+- **안전한 보안 관리**: `.env` 파일을 통한 API 키 암호화 및 Git 추적 제외
 
-## 📁 파일 구조
-- `index.html`: 채팅 UI 마크업 구조
-- `style.css`: 모던하고 깔끔한 메신저 스타일링
-- `script.js`: 메시지 전송, 스크롤 제어, 자동 응답 스크립트
+## 📁 프로젝트 구조
+- `src/desktop_app/`:
+  - `__init__.py`: 데스크톱 앱 실행 메인 진입점 (pywebview 윈도우 생성)
+  - `api.py`: JavaScript와 통신하는 `ChatApi` 브리지 및 OpenAI Responses API 호출 로직
+- `index.html`: 메신저 UI 마크업
+- `style.css`: 모던 데스크톱 메신저 레이아웃 및 애니메이션 스타일링
+- `script.js`: pywebview 비동기 API 통신 및 UI 상태 관리
+- `openai_test.py`: OpenAI API 독립 테스트 스크립트
+- `openai_test.ipynb`: OpenAI API 인터랙티브 테스트 주피터 노트북
 
-## 🚀 실행 방법
-별도의 서버 설치 없이 브라우저에서 바로 실행할 수 있습니다:
-1. `index.html` 파일을 더블 클릭하여 웹 브라우저(Chrome, Edge 등)로 열기
+## 🚀 데스크톱 앱 실행 방법
+터미널에서 아래 명령어를 실행하면 데스크톱 메신저 창이 열립니다:
+
+```bash
+uv run desktop-app
+```
+(또는 `uv run python -m desktop_app`)
