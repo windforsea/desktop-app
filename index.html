@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>간단한 채팅 UI</title>
+  <title>AI Chat App</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,10 +11,10 @@
     <!-- 채팅 헤더 -->
     <header class="chat-header">
       <div class="user-info">
-        <div class="avatar">🤖</div>
+        <div class="avatar">✨</div>
         <div class="details">
-          <h2 class="name">채팅 봇</h2>
-          <span class="status online">온라인</span>
+          <h2 class="name">AI 어시스턴트</h2>
+          <span class="status online" id="status-text">gpt-5.6-luna • 온라인</span>
         </div>
       </div>
       <div class="header-actions">
@@ -26,11 +26,11 @@
     <main class="chat-messages" id="chat-messages">
       <div class="date-divider">오늘</div>
       
-      <!-- 상대방 초기 환영 메시지 -->
+      <!-- AI 초기 환영 메시지 -->
       <div class="message incoming">
-        <div class="avatar-small">🤖</div>
+        <div class="avatar-small">✨</div>
         <div class="message-content">
-          <div class="bubble">안녕하세요! 무엇을 도와드릴까요? 😊</div>
+          <div class="bubble">안녕하세요! 데스크톱 AI 어시스턴트입니다. 무엇이든 편하게 물어보세요! 😊</div>
           <span class="timestamp" id="initial-time"></span>
         </div>
       </div>
