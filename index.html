@@ -3,56 +3,147 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Chat App</title>
+  <title>AI Chat & 울산 날씨 대시보드</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="chat-container">
-    <!-- 채팅 헤더 -->
-    <header class="chat-header">
-      <div class="user-info">
-        <div class="avatar">✨</div>
-        <div class="details">
-          <h2 class="name">AI 어시스턴트</h2>
-          <span class="status online" id="status-text">gpt-5.6-luna • 온라인</span>
-        </div>
-      </div>
-      <div class="header-actions">
-        <button type="button" id="clear-btn" title="대화 내용 지우기">🗑️</button>
-      </div>
-    </header>
+  <div class="app-container">
+    <!-- 상단 메인 탭 네비게이션 -->
+    <nav class="app-tabs">
+      <button type="button" class="tab-btn active" data-tab="chat-view">
+        <span class="tab-icon">💬</span>
+        <span class="tab-title">AI 메신저</span>
+      </button>
+      <button type="button" class="tab-btn" data-tab="weather-view" id="weather-tab-btn">
+        <span class="tab-icon">🌤️</span>
+        <span class="tab-title">울산 날씨</span>
+      </button>
+    </nav>
 
-    <!-- 메시지 목록 영역 -->
-    <main class="chat-messages" id="chat-messages">
-      <div class="date-divider">오늘</div>
-      
-      <!-- AI 초기 환영 메시지 -->
-      <div class="message incoming">
-        <div class="avatar-small">✨</div>
-        <div class="message-content">
-          <div class="bubble">안녕하세요! 데스크톱 AI 어시스턴트입니다. 무엇이든 편하게 물어보세요! 😊</div>
-          <span class="timestamp" id="initial-time"></span>
+    <!-- [탭 1] AI 메신저 뷰 -->
+    <section class="tab-content active" id="chat-view">
+      <header class="chat-header">
+        <div class="user-info">
+          <div class="avatar">✨</div>
+          <div class="details">
+            <h2 class="name">AI 어시스턴트</h2>
+            <span class="status online">gpt-5.6-luna • 온라인</span>
+          </div>
         </div>
-      </div>
-    </main>
+        <div class="header-actions">
+          <button type="button" id="clear-btn" title="대화 내용 지우기">🗑️</button>
+        </div>
+      </header>
 
-    <!-- 메시지 입력 영역 -->
-    <footer class="chat-input-area">
-      <form id="chat-form" autocomplete="off">
-        <input 
-          type="text" 
-          id="message-input" 
-          placeholder="메시지를 입력하세요..." 
-          required 
-          autofocus
-        />
-        <button type="submit" id="send-btn" title="전송">
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-          </svg>
+      <main class="chat-messages" id="chat-messages">
+        <div class="date-divider">오늘</div>
+        <div class="message incoming">
+          <div class="avatar-small">✨</div>
+          <div class="message-content">
+            <div class="bubble">안녕하세요! 데스크톱 AI 어시스턴트입니다. 상단의 <b>울산 날씨</b> 탭을 눌러 최신 기상청 예보 데이터도 확인해보세요! 😊</div>
+            <span class="timestamp" id="initial-time"></span>
+          </div>
+        </div>
+      </main>
+
+      <footer class="chat-input-area">
+        <form id="chat-form" autocomplete="off">
+          <input 
+            type="text" 
+            id="message-input" 
+            placeholder="메시지를 입력하세요..." 
+            required 
+            autofocus
+          />
+          <button type="submit" id="send-btn" title="전송">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+              <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+            </svg>
+          </button>
+        </form>
+      </footer>
+    </section>
+
+    <!-- [탭 2] 울산 날씨 대시보드 뷰 -->
+    <section class="tab-content" id="weather-view">
+      <!-- 날씨 대시보드 헤더 -->
+      <div class="weather-header">
+        <div class="weather-loc-box">
+          <span class="loc-badge">기상청 단기예보</span>
+          <h2 class="loc-name" id="loc-name">울산광역시 중구 반구1동</h2>
+          <span class="update-time" id="update-time">데이터를 불러오는 중...</span>
+        </div>
+        <button type="button" id="refresh-weather-btn" class="refresh-btn" title="최신 날씨 새로고침">
+          🔄 새로고침
         </button>
-      </form>
-    </footer>
+      </div>
+
+      <div class="weather-scroll-body" id="weather-body">
+        <!-- 현재 날씨 주요 카드 -->
+        <div class="weather-main-card">
+          <div class="weather-main-top">
+            <div class="temp-wrap">
+              <span class="current-temp" id="current-temp">--℃</span>
+              <span class="current-condition" id="current-condition">확인 중...</span>
+            </div>
+            <div class="weather-big-icon" id="weather-icon">🌤️</div>
+          </div>
+          <div class="weather-stats-grid">
+            <div class="stat-item">
+              <span class="stat-label">💧 강수확률</span>
+              <span class="stat-val" id="stat-pop">--%</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">🌫️ 습도</span>
+              <span class="stat-val" id="stat-reh">--%</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">💨 풍속</span>
+              <span class="stat-val" id="stat-wsd">--m/s</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">🌧️ 강수형태</span>
+              <span class="stat-val" id="stat-pty">--</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 시간대별 단기예보 -->
+        <div class="section-block">
+          <h3 class="section-title">⏱️ 시간대별 단기예보</h3>
+          <div class="hourly-forecast-list" id="hourly-list">
+            <!-- 자바스크립트로 동적 생성 -->
+          </div>
+        </div>
+
+        <!-- CSV 원본 데이터 테이블 섹션 -->
+        <div class="section-block">
+          <div class="table-section-header">
+            <h3 class="section-title">📊 기상청 수집 CSV 데이터</h3>
+            <span class="csv-path-badge" id="csv-badge">data/ulsan_weather.csv</span>
+          </div>
+          <p class="section-subtext">기상청 Open API로부터 수집되어 CSV 파일에 저장된 원본 데이터셋입니다.</p>
+          
+          <div class="table-container">
+            <table class="weather-table" id="csv-table">
+              <thead>
+                <tr>
+                  <th>예보일자</th>
+                  <th>시간</th>
+                  <th>항목명</th>
+                  <th>예보값</th>
+                  <th>발표시각</th>
+                  <th>격자(X,Y)</th>
+                </tr>
+              </thead>
+              <tbody id="csv-tbody">
+                <tr><td colspan="6" class="loading-cell">날씨 데이터를 불러오는 중입니다...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
 
   <script src="script.js"></script>

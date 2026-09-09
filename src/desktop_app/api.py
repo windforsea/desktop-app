@@ -3,12 +3,14 @@ from typing import Any, Dict, List
 from dotenv import load_dotenv
 from openai import OpenAI
 
+from desktop_app.weather import UlsanWeatherService
+
 
 class ChatApi:
-    """pywebview의 JavaScript와 통신하는 백엔드 API 브리지 클래스"""
+    """pywebview의 JavaScript와 통신하는 통합 백엔드 API 브리지 클래스"""
 
     def __init__(self) -> None:
-        # 1. 환경 변수 로드 (.env의 OPENAI_API_KEY)
+        # 1. 환경 변수 로드 (.env의 OPENAI_API_KEY, DATA_GO_KR_API_KEY)
         load_dotenv()
 
         # 2. OpenAI 클라이언트 초기화
@@ -21,6 +23,9 @@ class ChatApi:
             "간결하고 가독성 좋은 한국어로 명확하게 답변하세요."
         )
         self.history: List[Dict[str, str]] = []
+
+        # 4. 울산 날씨 서비스 초기화
+        self.weather_service = UlsanWeatherService()
 
     def send_message(self, user_text: str) -> Dict[str, Any]:
         """JavaScript로부터 전달받은 사용자 메시지를 OpenAI Responses API로 전달하고 답변을 반환합니다."""
@@ -65,3 +70,10 @@ class ChatApi:
         """대화 히스토리를 초기화합니다."""
         self.history.clear()
         return {"success": True}
+
+    def get_weather(self, force_refresh: bool = False) -> Dict[str, Any]:
+        """기상청 단기예보 Open API 기반 울산 날씨 대시보드 데이터 및 CSV 데이터 반환"""
+        try:
+            return self.weather_service.get_dashboard_data(force_refresh=force_refresh)
+        except Exception as e:
+            return {"success": False, "error": str(e)}
