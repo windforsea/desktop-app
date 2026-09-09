@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>간단한 채팅 UI</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="chat-container">
+    <!-- 채팅 헤더 -->
+    <header class="chat-header">
+      <div class="user-info">
+        <div class="avatar">🤖</div>
+        <div class="details">
+          <h2 class="name">채팅 봇</h2>
+          <span class="status online">온라인</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button type="button" id="clear-btn" title="대화 내용 지우기">🗑️</button>
+      </div>
+    </header>
+
+    <!-- 메시지 목록 영역 -->
+    <main class="chat-messages" id="chat-messages">
+      <div class="date-divider">오늘</div>
+      
+      <!-- 상대방 초기 환영 메시지 -->
+      <div class="message incoming">
+        <div class="avatar-small">🤖</div>
+        <div class="message-content">
+          <div class="bubble">안녕하세요! 무엇을 도와드릴까요? 😊</div>
+          <span class="timestamp" id="initial-time"></span>
+        </div>
+      </div>
+    </main>
+
+    <!-- 메시지 입력 영역 -->
+    <footer class="chat-input-area">
+      <form id="chat-form" autocomplete="off">
+        <input 
+          type="text" 
+          id="message-input" 
+          placeholder="메시지를 입력하세요..." 
+          required 
+          autofocus
+        />
+        <button type="submit" id="send-btn" title="전송">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+          </svg>
+        </button>
+      </form>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
